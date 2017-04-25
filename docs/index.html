@@ -1,0 +1,58 @@
+<html>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta http-equiv="content-type" content="text/html;charset=utf-8">
+		<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/1.6.4/jquery.js"></script>
+	</head>
+	<body>
+	<div id="origin_div">
+		<input  id="origin_start" type="text"  style="width: 700px" value="http://img01.mall.cmbchina.com/banner/" onchange="updateOriginUrl(this.value)" onblur="updateOriginUrl(this.value)" ></input>  </br>
+		<input  id="origin_middle" type="text"  style="width: 700px" onchange="updateOriginUrl(this.value)" onblur="updateOriginUrl(this.value)"  > </input></br>
+		<input  id="origin_end" type="text"  style="width: 700px" value="/index.html?pushwebview=1"> 	</input><button onclick="clearOriginUrl()">清除</button> </br>
+	 	</br>
+		<textarea id="origin_url"   style=""  rows="5" cols="80" onchange="updateOriginUrl(this.value)" onblur="updateOriginUrl(this.value)"  onchange="updateOriginUrled()"  onClick='copyOriginUrlTextToClipBoard(this)'></textarea>  <button   >复制</button>
+		<input type="button" onclick="javascript:refreshFrame();" value="Refresh Frame" />
+		<hr/>
+	</div>
+	<div id="utf_div">
+		<input  id="utf_start" type="text"  style="width: 700px" value="cmblife://go?url=MallWebView&next=">  </br>
+		<input  id="utf_middle" type="text"  style="width: 700px"> </br>
+		<input  id="utf_end" type="text"  style="width: 700px" value="&hiddenNavBar=yes"> 	<button name="">清除</button> </br>
+	 	</br>
+		<textarea id="utf_url"   style=""  rows="5" cols="80"></textarea><button>复制</button>
+		<hr/>
+		<iframe id="myframe" width="100%" frameBorder="0" src="test.html" scrolling="no"></iframe>
+	</div>
+	</body>
+
+	<script type="text/javascript">
+		/*
+		*/
+		function updateOriginUrl( data){
+			var originUrlText=$("#origin_start").val()+$("#origin_middle").val()+$("#origin_end").val();
+			$("#origin_url").text(originUrlText);
+			$("#utf_middle").val(originUrlText);
+			var utfUrlText=$("#utf_start").val()+encodeURIComponent($("#utf_middle").val())+$("#utf_end").val();
+			$("#utf_url").text(utfUrlText);
+			$('#iframe').attr("src",$("#utf_middle").val(originUrlText));
+		}
+
+		function clearOriginUrl(){
+			$("#origin_middle").val("");
+		}
+
+		/*
+		*/
+		function updateOriginUrled(data){
+
+
+		}
+		function copyOriginUrlTextToClipBoard(target){
+
+			console.log("gdsagds");
+		}
+		function refreshFrame(){
+	    	$('#iframe').attr('src', $('#iframe').attr('src'));
+		}
+	</script>
+</html>
