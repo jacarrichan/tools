@@ -3,14 +3,32 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta http-equiv="content-type" content="text/html;charset=utf-8">
 		<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/1.6.4/jquery.js"></script>
+        <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?a868f2ef3d53d33c0f9d6e9604cd0b3c";
+          var s = document.getElementsByTagName("script")[0]; 
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+		<style  type="text/css" >
+       
+		.static_item_input{
+			width:100%;
+			//background-color: #FFFFCC;
+		}
+        
+		</style>
 	</head>
 	<body>
 	<div id="edit_div"  style="float:left;">
 		<!-- 原始链接拼接区域 -->
 		<div id="origin_div">
-			<input  id="origin_start" type="text"   style="width:100%" value="http://img01.mall.cmbchina.com/" onchange="updateOriginUrl(this.value)" onblur="updateOriginUrl(this.value)" ></input>  </br>
-			<input  id="origin_middle" type="text"  style="width:100%"  onchange="updateOriginUrl(this.value)" onblur="updateOriginUrl(this.value)"  > </input></br>
-			<input  id="origin_end" type="text"  style="width:100%"  value="/index.html?pushwebview=1"> 	</input><button onclick="clearOriginUrl()">清除</button> </br>
+			<input  id="origin_start" type="text"  class="static_item_input" value="http://img01.mall.cmbchina.com/" onchange="updateOriginUrl(this.value)" onblur="updateOriginUrl(this.value)" ></input>  </br>
+			<input  id="origin_middle" type="text"  style="width:100%;background-color:#99FFCC"  onchange="updateOriginUrl(this.value)" onblur="updateOriginUrl(this.value)"  > </input></br>
+			<input  id="origin_end" type="text"  class="static_item_input"  value="/index.html?pushwebview=1"> 	</input><button onclick="clearOriginUrl()">清除</button> </br>
 		 	</br>
 			<textarea id="origin_url"   style=""  rows="5" cols="80" onchange="updateOriginUrl(this.value)" onblur="updateOriginUrl(this.value)"  onchange="updateOriginUrled()"  onClick='copyOriginUrlTextToClipBoard(this)'></textarea>  <button   >复制</button>
 			<input type="button" onclick="javascript:refreshFrame();" value="手动刷新预览区域" />
@@ -18,9 +36,9 @@
 		</div>
 		<!-- 编码连接拼接区域 -->
 		<div id="utf_div">
-			<input  id="utf_start" type="text"  style="width:100%"  value="cmblife://go?url=MallWebView&next=">  </br>
-			<input  id="utf_middle" type="text"  style="width:100%" > </br>
-			<input  id="utf_end" type="text"  style="width:100%"  value="&hiddenNavBar=yes"> 	<button name="">清除</button> </br>
+			<input  id="utf_start" type="text"  class="static_item_input"  value="cmblife://go?url=MallWebView&next=">  </br>
+			<input  id="utf_middle" type="text"  class="static_item_input"  > </br>
+			<input  id="utf_end" type="text"  class="static_item_input"   value="&hiddenNavBar=yes"> 	<button name="">清除</button> </br>
 		 	</br>
 			<textarea id="utf_url"   style=""  rows="5" cols="80"></textarea><button>复制</button>
 			<hr/>
