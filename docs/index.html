@@ -56,6 +56,7 @@
 			$("#utf_url").text(utfUrlText);
 			console.log(originUrlText);
 			$('#myframe').attr("src",$("#utf_middle").val());
+			$.ajax({url:"a.json"}});//用于数据统计
 		}
 
 		function clearOriginUrl(){
