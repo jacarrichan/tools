@@ -1,78 +1,182 @@
-<html>
-	<head>
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<meta http-equiv="content-type" content="text/html;charset=utf-8">
-		<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/1.6.4/jquery.js"></script>
-
-
-		<style  type="text/css" >
-       
-		.static_item_input{
-			width:100%;
-			//background-color: #FFFFCC;
-		}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="user-scalable=no" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+	<meta content="telephone=no" name="format-detection" /><!--忽略将数字识别为电话号码-->
+    <script type="text/javascript" src="jquery-1.8.0.js"></script>  
+    <script type="text/javascript" src="jquery.qrcode.js"></script>  
+    <script type="text/javascript" src="utf.js"></script>  
         
-		</style>
-	</head>
-	<body>
-	<div id="edit_div"  style="float:left;">
-		<!-- 原始链接拼接区域 -->
-		<div id="origin_div">
-			<input  id="origin_start" type="text"  class="static_item_input" value="http://img01.mall.cmbchina.com/" onchange="updateOriginUrl(this.value)" onblur="updateOriginUrl(this.value)" ></input>  </br>
-			<input  id="origin_middle" type="text"  style="width:100%;background-color:#99FFCC"  onchange="updateOriginUrl(this.value)" onblur="updateOriginUrl(this.value)"  > </input></br>
-			<input  id="origin_end" type="text"  class="static_item_input"  value="/index.html?pushwebview=1"> 	</input><button onclick="clearOriginUrl()">清除</button> </br>
-		 	</br>
-			<textarea id="origin_url"   style=""  rows="5" cols="80" onchange="updateOriginUrl(this.value)" onblur="updateOriginUrl(this.value)"  onchange="updateOriginUrled()"  onClick='copyOriginUrlTextToClipBoard(this)'></textarea>  <button   >复制</button>
-			<input type="button" onclick="javascript:refreshFrame();" value="手动刷新预览区域" />
-			<hr/>
+	<title>url转码器</title>
+	<style>
+		*{
+			margin:0;
+			padding:0;
+		}
+		body{
+			padding:10px;
+		}
+		#workPart{
+			float:left;
+			width:600px;
+		}
+        #barPart {
+			float:left;
+            margin-left:60px ;
+        }        
+		iframe{
+			position:absolute;
+			right:100px;
+			top:0;
+			width:375px;
+			height:667px;
+		}
+		h4{
+			line-height:50px;
+		}
+		input{
+			width:500px;
+			font-size:14px;
+			border:1px solid #e3e3e3;
+			padding:5px;
+		}
+		.turn{
+			float:left;
+			width:150px;
+			text-align: center;
+			padding:5px;
+			margin:20px ;
+			background-color:#26c1ff;
+			color:#fff;
+			font-size:14px;
+			border-radius:2px;
+			cursor:pointer;
+			transition: background-color 1s,border-radius 1s;
+
+		}
+		.turn:hover{
+			background-color:#39d5de;
+			border-radius:8px;
+		}
+		#cTos{
+			background-color:#ff9226;
+		}
+		#cTos:hover{
+			background-color:#f7a859;
+		}
+		#result{
+			background:#e3e3e3;
+		}
+		#copy{
+			width:80px;
+			text-align: center;
+			padding:5px;
+			margin:20px 0;
+			background-color:#009419;
+			color:#fff;
+			font-size:14px;
+			border-radius:2px;
+			cursor:pointer;
+			transition: background-color 1s,border-radius 1s;
+		}
+		#copy:hover{
+			background-color:#03df28;
+			border-radius:8px;
+		}
+		.clearfix:before,
+		.clearfix:after {
+		    content: "";
+		    display: table;
+		}
+
+		.clearfix:after {
+		    clear: both;
+		    overflow: hidden;
+		}
+
+	</style>	
+</head>
+<body>
+	<div id="workPart">
+		<h4>源地址=>cmblife地址</h4>
+		<input type="text" placeholder="https://img01.mall.cmbchina..." id="inputUrl" oninput="OnInput(event)" onpropertychange="OnPropChanged(event)">
+		<div id="btnCont" class='clearfix'>
+			<div class="turn" id="sToc" onclick="changeUrl(0)">源地址=>cmblife地址</div>
+			<div class="turn" id="cTos" onclick="changeUrl(1)">cmblife地址=>源地址</div>
 		</div>
-		<!-- 编码连接拼接区域 -->
-		<div id="utf_div">
-			<input  id="utf_start" type="text"  class="static_item_input"  value="cmblife://go?url=MallWebView&next=">  </br>
-			<input  id="utf_middle" type="text"  class="static_item_input"  > </br>
-			<input  id="utf_end" type="text"  class="static_item_input"   value="&hiddenNavBar=yes"> 	<button name="">清除</button> </br>
-		 	</br>
-			<textarea id="utf_url"   style=""  rows="5" cols="80"></textarea><button>复制</button>
-			<hr/>
-		</div>
+		
+		<h4>输出结果</h4>
+		<input type="text" id="result" placeholder="输出结果"/>
+		<div id="copy">复制结果</div>
+        <div id="barPart">
+             <div id="qrcodeCanvas"></div> 
+        </div>        
 	</div>
-	<!-- 原始链接预览区域 -->
-	<div id="origin_url_view" style="float:left;width:30%">
-		<div    style="padding-left:20px">
-			预览区域 </br>
-			<iframe id="myframe"  height="800px" frameBorder="0"  scrolling="yes"></iframe>
-		</div>
-	</div>
-	</body>
 
-	<script type="text/javascript">
-		/*
-		*/
-		function updateOriginUrl( data){
-			var originUrlText=$("#origin_start").val()+$("#origin_middle").val()+$("#origin_end").val();
-			$("#origin_url").text(originUrlText);
-			$("#utf_middle").val(originUrlText);
-			var utfUrlText=$("#utf_start").val()+encodeURIComponent($("#utf_middle").val())+$("#utf_end").val();
-			$("#utf_url").text(utfUrlText);
-			console.log(originUrlText);
-			$('#myframe').attr("src",$("#utf_middle").val());
-			$.ajax({url:"a.json"});//用于数据统计
+    
+	<iframe src="http://img01.mall.cmbchina.com/banner/mall/mobile/lunbo/2017/0609/618diannao/index.html" frameborder="0" id="myIframe"></iframe>
+
+	<script>
+		var _result = document.getElementById('result');
+		var _url = document.getElementById('inputUrl');
+		var _ifr = document.getElementById('myIframe');
+		var _copy = document.getElementById('copy');
+		
+		function changeUrl(e){
+			if(!e){//原链接转cmblife
+				if(!_url.value||_url.value.indexOf('http')==-1){
+					_result.value = "请填写正确链接(https://XXXX)"
+				}
+				else{
+					_result.value = "cmblife://go?url=web&next="+encodeURIComponent(_url.value)+"&pushwebview=1&version=v2"
+				}
+			}
+			else{//cmblife转原链接
+				if(!_url.value||_url.value.indexOf('cmblife')==-1){
+					_result.value = "请填写正确链接(cmblife://XXXX)"
+				}
+				else{
+					var decodeResult =  decodeURIComponent(_url.value).replace(/cmblife.*next=/,'').replace(/pushweb.*/,'');
+					if(decodeResult.charAt(decodeResult.length-1=="&")){
+						decodeResult=decodeResult.substring(0,decodeResult.length-1)
+					}
+					_result.value=decodeResult;
+				}
+			}
+            $("#qrcodeCanvas").qrcode({  
+                render : "canvas",    //设置渲染方式，有table和canvas，使用canvas方式渲染性能相对来说比较好  
+                text : _result.value,    //扫描二维码后显示的内容,可以直接填一个网址，扫描二维码后自动跳向该链接  
+                width : "200",               //二维码的宽度  
+                height : "200",              //二维码的高度  
+                background : "#ffffff",       //二维码的后景色  
+                foreground : "#000000"        //二维码的前景色  
+
+            });  
+		}
+		_copy.onclick = function(){
+			if(!_result.value||_result.value.indexOf('cmblife')==-1){
+				return;
+			}
+			else{
+				_result.select();
+				document.execCommand("Copy");
+				alert('复制成功');
+			}
 		}
 
-		function clearOriginUrl(){
-			$("#origin_middle").val("");
-		}
 
-		/*
-		*/
-		function updateOriginUrled(data){
-
-
-		}
-		function copyOriginUrlTextToClipBoard(target){
-
-			
-		}
+	function OnInput(event) {
+           _ifr.src=event.target.value;
+        }
+    // Internet Explorer
+    function OnPropChanged(event) {
+        if (event.propertyName.toLowerCase () == "value") {
+           _ifr.src=event.srcElement.value;
+        }
+    }
+		
 	</script>
     <script>
         var _hmt = _hmt || [];
@@ -83,4 +187,5 @@
           s.parentNode.insertBefore(hm, s);
         })();
     </script>
+</body>
 </html>
