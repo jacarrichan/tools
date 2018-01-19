@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="user-scalable=no" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+	<meta content="telephone=no" name="format-detection" /><!--忽略将数字识别为电话号码-->
+    <script type="text/javascript" src="./assets/jquery.min.js"></script>
+    <script type="text/javascript" src="jquery.qrcode.js"></script>  
+    <script type="text/javascript" src="utf.js"></script>
+	<link href="./assets/bootstrap.min.css" rel="stylesheet">
+	<script src="./assets/bootstrap.min.js"></script>
+
+	<title>url转码器</title>
+	<style>
+		*{
+			margin:0;
+			padding:0;
+		}
+		body{
+			padding:10px;
+		}
+		#workPart{
+			float:left;
+			width:600px;
+		}
+        #barPart {
+			float:left;
+            margin-left:60px ;
+        }        
+		iframe{
+			position:absolute;
+			right:100px;
+			top:2;
+			width:375px;
+			height:99%;
+		}
+		h4{
+			line-height:50px;
+		}
+		input{
+			width:500px;
+			font-size:14px;
+			border:1px solid #e3e3e3;
+			padding:5px;
+		}
+		.turn{
+			float:left;
+			width:150px;
+			text-align: center;
+			padding:5px;
+			margin:20px ;
+			background-color:#26c1ff;
+			color:#fff;
+			font-size:14px;
+			border-radius:2px;
+			cursor:pointer;
+			transition: background-color 1s,border-radius 1s;
+
+		}
+		.turn:hover{
+			background-color:#39d5de;
+			border-radius:8px;
+		}
+		#cTos{
+			background-color:#ff9226;
+		}
+		#cTos:hover{
+			background-color:#f7a859;
+		}
+		#result{
+			background:#e3e3e3;
+		}
+		#copy{
+			width:80px;
+			text-align: center;
+			padding:5px;
+			margin:20px 0;
+			background-color:#009419;
+			color:#fff;
+			font-size:14px;
+			border-radius:2px;
+			cursor:pointer;
+			transition: background-color 1s,border-radius 1s;
+		}
+		#copy:hover{
+			background-color:#03df28;
+			border-radius:8px;
+		}
+		.clearfix:before,
+		.clearfix:after {
+		    content: "";
+		    display: table;
+		}
+
+		.clearfix:after {
+		    clear: both;
+		    overflow: hidden;
+		}
+
+	</style>	
+</head>
+<body>
+<nav class="navbar navbar-default" id="top_menu">
+	<div class="container-fluid">
+	<ul class="nav navbar-nav" style="width: 100%;">
+		<li class="dropdown hide1">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" id="formatTools" aria-expanded="false">其他工具<span class="caret"></span></a>
+			<ul class="dropdown-menu">
+			<li><a href="tools.jacarrichan.com/urlencode/">编码</a></li>
+			</ul>
+		</li>
+		<li><a href="tools.jacarrichan.com/validate/">JSON格式化</a></li>
+		<li><a href="tools.jacarrichan.com/json2javapojo/">JSON转JAVA bean</a></li>
+		<li><a href="tools.jacarrichan.com/urlencode/">编码</a></li>
+	</ul>
+	</div>
+</nav>
+
+
+
+<div>
+	<div id="workPart">
+		<h4>源地址=>cmblife地址</h4>
+		<input type="text" placeholder="https://img01.mall.cmbchina..." id="inputUrl" oninput="OnInput(event)" onpropertychange="OnPropChanged(event)">
+		<div id="btnCont" class='clearfix'>
+			<div class="turn" id="sToc" onclick="changeUrl(0)">源地址=>cmblife地址</div>
+			<div class="turn" id="cTos" onclick="changeUrl(1)">cmblife地址=>源地址</div>
+		</div>
+
+		<h4>输出结果</h4>
+		<input type="text" id="result" placeholder="输出结果"/>
+		<div id="copy">复制结果</div>
+		<div id="barPart">
+			<div id="qrcodeCanvas"></div>
+		</div>
+	</div>
+
+
+	<iframe src="https://ssl.mall.cmbchina.com/_cl5_/Product/Detail?productCode=S34-607-64P_079" frameborder="0" id="myIframe"></iframe>
+
+</div>
+	<script>
+		var _result = document.getElementById('result');
+		var _url = document.getElementById('inputUrl');
+		var _ifr = document.getElementById('myIframe');
+		var _copy = document.getElementById('copy');
+		
+		function changeUrl(e){
+			if(!e){//原链接转cmblife
+				if(!_url.value||_url.value.indexOf('http')==-1){
+					_result.value = "请填写正确链接(https://XXXX)"
+				}
+				else{
+					_result.value = "cmblife://go?url=web&next="+encodeURIComponent(_url.value)+"&pushwebview=1&version=v2"
+				}
+			}
+			else{//cmblife转原链接
+				if(!_url.value||_url.value.indexOf('cmblife')==-1){
+					_result.value = "请填写正确链接(cmblife://XXXX)"
+				}
+				else{
+					var decodeResult =  decodeURIComponent(_url.value).replace(/cmblife.*next=/,'').replace(/pushweb.*/,'');
+					if(decodeResult.charAt(decodeResult.length-1=="&")){
+						decodeResult=decodeResult.substring(0,decodeResult.length-1)
+					}
+					_result.value=decodeResult;
+				}
+			}
+            $("#qrcodeCanvas").html("");//清空旧二维码
+            $("#qrcodeCanvas").qrcode({  
+                render : "canvas",    //设置渲染方式，有table和canvas，使用canvas方式渲染性能相对来说比较好  
+                text : _result.value,    //扫描二维码后显示的内容,可以直接填一个网址，扫描二维码后自动跳向该链接  
+                width : "200",               //二维码的宽度  
+                height : "200",              //二维码的高度  
+                background : "#ffffff",       //二维码的后景色  
+                foreground : "#000000"        //二维码的前景色  
+
+            });  
+		}
+		_copy.onclick = function(){
+			if(!_result.value||_result.value.indexOf('cmblife')==-1){
+				return;
+			}
+			else{
+				_result.select();
+				document.execCommand("Copy");
+				alert('复制成功');
+			}
+		}
+
+
+	function OnInput(event) {
+           _ifr.src=event.target.value;
+        }
+    // Internet Explorer
+    function OnPropChanged(event) {
+        if (event.propertyName.toLowerCase () == "value") {
+           _ifr.src=event.srcElement.value;
+        }
+    }
+		
+	</script>
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?a868f2ef3d53d33c0f9d6e9604cd0b3c";
+          var s = document.getElementsByTagName("script")[0]; 
+          s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+</body>
+</html>
