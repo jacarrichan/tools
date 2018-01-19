@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+    <title>在线JSON字符串转Java实体类(JavaBean)</title>
+    <meta name="description" content="在线JSON字符串转Java实体类(JavaBean)">
+    <script src="./assets/jquery.min.js"></script>
+    <link href="./assets/bootstrap.min.css" rel="stylesheet">
+    <script src="./assets/bootstrap.min.js"></script>
+    <link href="./assets/layer.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="./assets/global.css">
+    <script src="./assets/global.js"></script>
+    <link rel="stylesheet" href="./assets/layer.css" id="layuicss-skinlayercss">
+</head>
+<body>
+<nav class="navbar navbar-default" id="top_menu">
+    <div class="container-fluid">
+        <ul class="nav navbar-nav" style="width: 100%;">
+            <li class="dropdown hide1">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" id="formatTools" aria-expanded="false">其他工具<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="tools.jacarrichan.com/urlencode/">编码</a></li>
+                </ul>
+            </li>
+            <li><a href="tools.jacarrichan.com/validate/">JSON格式化</a></li>
+            <li><a href="tools.jacarrichan.com/json2javapojo/">JSON转JAVA bean</a></li>
+            <li><a href="tools.jacarrichan.com/urlencode/">编码</a></li>
+        </ul>
+    </div>
+</nav>
+
+
+<div class="aw-container-wrap">
+    <div class="container">
+        <div class="row">
+            <div class="aw-content-wrap clearfix">
+                <div class=" aw-main-content" style="min-height:700px;max-height:2000px">
+                    <nav class="navbar navbar-default" id="top_menu">
+                        <div class="container-fluid">
+                        </div>
+                    </nav>
+                    <script>
+
+
+                        var showaban = true;
+                        var storageKey = "newtools20171213";
+                        if (window.localStorage.getItem(storageKey) == null) {
+                            $("#houduantools").after('<span class="newFeatureTip">●</span>');
+
+                            $("#prop2yaml").before('<span class="newItem">●</span>');
+                            document.getElementById("prop2yaml").onmouseover = function () {
+                                window.localStorage.setItem(storageKey, "has");
+                                $(".newFeatureTip").text('');
+                            }
+
+                        }
+
+
+                    </script>
+                    <div style="clear:both"></div>
+                    <style>
+                        .a2016 {
+                            color: white;
+                            font-family: "Microsoft YaHei", 微软雅黑, "MicrosoftJhengHei", 华文细黑, STHeiti, MingLiu;
+                            text-align: center;
+                            background: red;
+                            border-radius: 2px;
+                        }
+
+                        .touxiang {
+                            height: 20px;
+                            line-height: 45px;
+                        }
+                    </style>
+                    <link rel="stylesheet" type="text/css" href="./assets/java2pojo.css">
+                    <script type="text/javascript">
+                        function download_zip() {
+                            var package_name = $('#package_name').val();
+                            var zip = new JSZip();
+                            var code = zip.folder(package_name.replace(/\./g, "/"));
+
+                            $('.result').each(function () {
+                                code.file($(this).attr('class_name') + '.java', $(this).val());
+                            });
+
+                            var content = zip.generate({type: "blob"});
+                            // see FileSaver.js
+                            saveAs(content, "bejson_gen_beans.zip");
+                        }
+                        function gen() {
+                            try {
+                                $("#genDiv").html("");
+                                $("#result-list .result_row").remove();
+                                $('#resule_text').text('');
+
+                                var class_name = $('#class_name').val();
+                                var package_name = $('#package_name').val();
+                                //获取要解析的文本及文本类型
+                                var text = $('#json_content').val();
+                                //目前只支持json一种格式
+                                var textType = $('#in_type').val();
+
+                                if (text) {
+                                    var beans;
+
+                                    if (textType === 'json') {
+                                        beans = getBeanFieldFromJson(text, class_name);
+                                    } else if (textType === 'sql') {
+                                        alert("还没实现");
+                                        return;
+                                    }
+
+                                    //把本程序定义的数据格式转换为文本
+
+                                    $.each(beans, function (i, v) {
+                                        var beanText = toBeanText(v, package_name);
+                                        var textCss = "";
+                                        if (i != 0) {
+                                            textCss = "small-text";
+                                        }
+                                        beanText = beanText.replace("<int>", "<Integer>").replace("<long>", "<Long>");
+                                        var html = '<textarea class_name="' + v.name + '" class="result ' + textCss + '" onmouseover="this.focus();this.select()">' + beanText + '</textarea>';
+                                        $("#genDiv").append(html);
+
+                                    })
+                                    $('#resule_text').html('<span class="green">Success!</span>');
+                                    $('#download_btn').show();
+                                }
+                            }
+                            catch (err) {
+                                var tip = "";
+                                if (err.message.indexOf("Parse error on line") != -1) {
+                                    tip = err.message;
+                                }
+                                else {
+                                    tip = "parse error,makesure the json is right";
+                                }
+                                $('#resule_text').html('<span class="red">' + tip + '</span>');
+                                $('#download_btn').hide();
+                            }
+                        }
+                    </script>
+                    <script>
+                        var showaban = false;
+                    </script>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="media">
+                                <div class="media-body">
+                                    <h4 class="media-heading">在线JSON字符串转Java实体类(JavaBean)</h4>
+                                    <div id="desc1">在线JSON字符串转Java实体类(JavaBean)</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <ul class="new_tools_list">
+                                <li>填写JSON内容，生成Javabean的类名、包名即可<span class="green">自动生成JavaBean代码，并直接打包下载</span>。</li>
+                            </ul>
+                            <div class="divider"></div>
+<textarea placeholder="贴入要生成Pojo的Json代码" id="json_content" onchange="gen();" onkeyup="gen();">{
+	"animals":{
+	"dog":[
+		{"name":"Rufus","breed":"labrador","count":1,"twoFeet":false},
+		{"name":"Marty","breed":"whippet","count":1,"twoFeet":false}
+	],
+	"cat":{"name":"Matilda"}
+}
+}</textarea>
+                            <form action="https://www.bejson.com/json2javapojo/new/" id="result-list" method="get">
+                                <div class="row">
+                                    <span class="span strong">&nbsp;Class：</span>
+                                    <div class="span two xs-six">
+                                        <input type="text" class="input-text" id="class_name" placeholder="类名"
+                                               value="JsonRootBean">
+                                    </div>
+                                    <span class="span strong">&nbsp;Package：</span>
+                                    <div class="span three xs-six">
+                                        <input type="text" class="input-text" id="package_name" placeholder="包名根路径"
+                                               value="com.besjon.pojo">
+                                    </div>
+                                    <div class="span two xs-six">
+                                        <select id="in_type" class="select">
+                                            <option value="json" selected="selected">JSON</option>
+                                        </select>
+                                    </div>
+                                    <button class="button primary small" onclick="gen();" type="button">生成JavaBean
+                                    </button>
+                                    <button style="" class="button success small" id="download_btn"
+                                            onclick="download_zip();" type="button">下载代码
+                                    </button>
+                                    <button class="button primary small"
+                                            onclick="window.location.href='http://www.bejson.com/json2javapojo/'"
+                                            type="button">旧版本
+                                    </button>
+                                </div>
+                                <div>
+                                    <div class="alert success" id="resule_text"></div>
+                                </div>
+                                <div id="genDiv">
+
+                                </div>
+                            </form>
+                            <script src="./assets/jsonlint.js"></script>
+                            <script src="./assets/java2pojotools2.js" type="text/javascript" charset="utf-8"></script>
+                            <script src="./assets/jszip.min.js"></script>
+                            <script src="./assets/FileSaver.js"></script>
+                            <div class="divider"></div>
+                        </div>
+                        <div class="panel-footer"></div>
+                    </div>
+                    <script src="./assets/layer.min.js"></script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="./assets/bejsoncommon.js"></script>
+<div class="modal fade" id="mod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document" style="width: 96%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="mod_title">扫描二维码付款</h4></div>
+            <div class="modal-body" id="mod_body" style="text-align: center;"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
