@@ -161,7 +161,7 @@
 				}
 				else{
 					var decodeResult =  decodeURIComponent(_url.value).replace(/cmblife.*next=/,'').replace(/pushweb.*/,'');
-					if(decodeResult.charAt(decodeResult.length-1=="&")){
+					if(decodeResult.charAt(decodeResult.length-1)=="&"){
 						decodeResult=decodeResult.substring(0,decodeResult.length-1)
 					}
 					_result.value=decodeResult;
